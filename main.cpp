@@ -106,6 +106,19 @@ public:
     }
 };
 
+vector<int> BSC(const vector<int> &bits, double successChance) {
+    vector<int> noise(bits.size());
+    static random_device rd;
+    static mt19937 gen(rd());
+    bernoulli_distribution dist (successChance);
+
+    for (size_t i = 0; i < bits.size(); i++) {
+        noise[i] = bits[i];
+        if (dist(gen)) noise[i] ^= 1;
+    }
+    return noise;
+}
+
 int main() {
 
 

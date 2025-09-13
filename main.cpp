@@ -37,7 +37,74 @@ public:
     }
 };
 
+class Viterbi{
+public:
+    int convlength;
+    vector<int> polynoms;
+    int numState;
 
+    Viterbi(int k, vector<int> p): convlength(k), polynoms(p) {
+        numState = 1 << (convlength - 1);
+    }
+
+    vector<int> decode(const vector<int> &receive) {
+        int n = polynoms.size();
+        int T = receive.size() /n;
+
+        vector<vector<int>> paths(T + 1, vector<int>(numState, 1e9));
+        vector<vector<int>> predecessor(T + 1, vector<int>(numState, -1));
+        vector<vector<int>> inputBit(T + 1, vector<int>(numState, -1));
+
+        paths[0][0] = 0;
+
+        for (int t = 0; t < T; t++) {
+            for (int state = 0; state < numState; state++) {
+                if (paths[t][state] >= 1e9) continue;
+
+                for (int bit = 0; bit <= 1; bit++) {
+                    int nextState = ((state << 1) | bit) & (numState - 1);
+                
+
+                vector<int> shift(convlength);
+                for (int i = 0; i < convlength - 1; i++)
+                    shift[i] = (state >> i) & 1;
+                shift[convlength - 1] = bit;
+
+                vector<int> out;
+                for (int g: polynoms) {
+                    int val = 0;
+                    for (int i = 0; i < convlength; i++) {
+                        if ((g >> i) & 1) val ^= shift[i];
+                    }
+                    out.push_back(val);
+                }
+
+                int hamdist = 0;
+                for (int k = 0; k < n; k++) {
+                    if (out[k] != receive[t * n + k]) hamdist++;
+                }
+                
+                int metric = paths[t][state] + hamdist;
+                if (metric < paths[t+1][nextState]) {
+                    paths[t+1][nextState] = metric;
+                    predecessor[t+1][nextState] = state;
+                    inputBit[t+1][nextState] = bit;
+                }
+            }
+        }
+    }
+    
+    int best = min_element(paths[T].begin(), paths[T].end()) - paths[T].begin();
+
+    vector<int> decodeBits(T);
+    for (int t = T; t > 0; t--) {
+        decodeBits[t - 1] = inputBit[t][best];
+        best = predecessor[t][best];
+    }
+
+    return decodeBits;
+    }
+};
 
 int main() {
 

@@ -122,6 +122,21 @@ vector<int> BSC(const vector<int> &bits, double pError) {
 
 int main() {
 
-    
+int k = 3;
+vector<int> polynoms = {7, 5};
+
+ConvolutionalCode coding(k, polynoms);
+Viterbi decoding(k, polynoms);
+
+int N = 1000;
+vector<int> message(N);
+
+mt19937 rndm(time(0));
+uniform_int_distribution<int> bitDist(0, 1);
+for (int i = 0; i < N; i++) message[i] = bitDist(rndm);
+
+
+
+return 0;    
 
 }

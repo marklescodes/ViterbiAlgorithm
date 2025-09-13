@@ -135,7 +135,20 @@ mt19937 rndm(time(0));
 uniform_int_distribution<int> bitDist(0, 1);
 for (int i = 0; i < N; i++) message[i] = bitDist(rndm);
 
+cout << "Error probability  BER" << endl;
 
+for (double p = 0.0; p <= 0.2; p += 0.02) {
+    vector<int> coded = coding.encode(message);
+    vector<int> noise = BSC(coded, p);
+    vector<int> decoded = decoding.decode(noise);
+
+    int errors = 0;
+    for (int i = 0; i < N; i++) {
+        if (decoded[i] != message[i]) errors++;
+    }
+    double BER = (double)errors / N;
+    cout << p << "  " << BER << endl;
+}
 
 return 0;    
 

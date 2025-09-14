@@ -135,17 +135,16 @@ private:
 };
 }
 
-std::vector<int> BSC(const std::vector<int> &bits, double pError) {
+inline std::vector<int> BSC(const std::vector<int> &bits, double pError, std::mt19937& p) {
     std::vector<int> noise(bits.size());
-    static std::mt19937 gen(std::time(0));
-    std::bernoulli_distribution dist (pError);
-
-    for (size_t i = 0; i < bits.size(); i++) {
+    std::bernoulli_distribution flip (pError);
+    for (std::size_t i = 0; i < bits.size(); i++) {
         noise[i] = bits[i];
-        if (dist(gen)) noise[i] ^= 1;
+        if (flip(p)) noise[i] ^= 1;
     }
     return noise;
 }
+
 
 int main() {
 

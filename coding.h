@@ -26,7 +26,7 @@ public:
 
             for (int p : polynoms_) {
                 int val = 0;
-                for (std::size_t i = 0; i < convLength_; i++) {
+                for (std::size_t i = 0; i < convLength_; ++i) {
                     if ((p >> i) & 1) val ^= shift[i];
                 }
                 output.push_back(val);
@@ -58,8 +58,7 @@ public:
 
     std::vector<int> decode(const std::vector<int> &received) const {
         const std::size_t n = polynoms_.size();
-        if (n == 0) return {};
-        if (received.empty()) return {};
+        if (n == 0 || received.empty()) return {};
         const std::size_t T = received.size() / n;
         
         std::vector<std::vector<int>> pathMetric(T+1, std::vector<int>(numStates_, infinite));
@@ -76,8 +75,8 @@ public:
                     const std::size_t nextState = (((unsigned)state << 1) | (unsigned)bit) & (numStates_ - 1);
 
                     std::vector<int> shift(convLength_, 0);
-                    for (std::size_t i = 0; i < convLength_ - 1; ++i) shift[i] = (state >> i) & 1;
-                    shift[convLength_ - 1] = bit;
+                    shift[0] = bit;
+                    for (std::size_t i = 1; i < convLength_; ++i) shift[i] = (state >> (i - 1)) & 1;
 
                     int hamdist = 0;
                     for (std::size_t gi = 0; gi < n; ++gi) {
@@ -118,8 +117,8 @@ public:
             if (currentState < 0) break;
         }
 
-        if (convLength_ > 1 && decode.size() >= convLength_ - 1) {
-            decode.resize(decode.size() - (convLength_ - 1) * polynoms_.size());
+        if (convLength_ > 1 && decode.size() >= (convLength_ - 1)) {
+            decode.resize(decode.size() - (convLength_ - 1));
         }
 
         return decode;
@@ -132,12 +131,12 @@ private:
     std::size_t numStates_;
 };
 
-inline std::vector<int> BSC(const std::vector<int> &bits, double pError, std::mt19937& p) {
+inline std::vector<int> BSC(const std::vector<int> &bits, double pError, std::mt19937& rng) {
     std::vector<int> noise(bits.size());
     std::bernoulli_distribution flip (pError);
-    for (std::size_t i = 0; i < bits.size(); i++) {
+    for (std::size_t i = 0; i < bits.size(); ++i) {
         noise[i] = bits[i];
-        if (flip(p)) noise[i] ^= 1;
+        if (flip(rng)) noise[i] ^= 1;
     }
     return noise;
 }

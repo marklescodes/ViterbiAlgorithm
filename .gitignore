@@ -42,4 +42,4 @@
 
 *.vscode
 *.json
-*.csv
+ber_vs_error.csv

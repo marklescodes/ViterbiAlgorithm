@@ -1,9 +1,9 @@
 #include <algorithm> 
-#include <ctime> 
 #include <iostream> 
 #include <limits> 
 #include <random> 
 #include <vector>
+#include <chrono>
 
 
 namespace coding {
@@ -148,33 +148,21 @@ inline std::vector<int> BSC(const std::vector<int> &bits, double pError, std::mt
 
 int main() {
 
-int k = 3;
-std::vector<int> polynoms = {7, 5};
+    const std::size_t convLength = 3;
+    const std::vector<int> polynoms = {7, 5};
+    const std::size_t N = 1000;
+    const double start = 0.0, end = 0.2, step = 0.02;
+    const unsigned seed = (unsigned)std::chrono::system_clock::now().time_since_epoch().count();
 
-ConvolutionalCode coding(k, polynoms);
-Viterbi decoding(k, polynoms);
+    std::mt19937 rndm(seed);
 
-int N = 1000;
-std::vector<int> message(N);
+    coding::ConvolutionalCode code(convLength, polynoms);
+    coding::Viterbi decode (convLength, polynoms);
 
-std::mt19937 rndm(time(0));
-std::uniform_int_distribution<int> bitDist(0, 1);
-for (int i = 0; i < N; i++) message[i] = bitDist(rndm);
+    std::vector<int> message(N);
+    std::uniform_int_distribution<int> bitDist(0,1);
+    for (std::size_t i = 0; i < N; ++i) message[i] = bitDist(rndm);
 
-std::cout << "Error probability  BER" << std::endl;
-
-for (double p = 0.0; p <= 0.2; p += 0.02) {
-    std::vector<int> coded = coding.encode(message);
-    std::vector<int> noise = BSC(coded, p);
-    std::vector<int> decoded = decoding.decode(noise);
-
-    int errors = 0;
-    for (int i = 0; i < N; i++) {
-        if (decoded[i] != message[i]) errors++;
-    }
-    double BER = (double)errors / N;
-    std::cout << p << "  " << BER << std::endl;
-}
 
 return 0;    
 

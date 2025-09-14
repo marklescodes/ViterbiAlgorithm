@@ -13,14 +13,14 @@ int main() {
     const double start = 0.0, end = 0.2, step = 0.02;
     const unsigned seed = (unsigned)std::chrono::system_clock::now().time_since_epoch().count();
 
-    std::mt19937 rng(seed);
+    std::mt19937 rndm(seed);
 
     ConvolutionalCode code(convLength, polynoms);
     Viterbi decode (convLength, polynoms);
 
     std::vector<int> message(N);
     std::uniform_int_distribution<int> bitDist(0,1);
-    for (std::size_t i = 0; i < N; ++i) message[i] = bitDist(rng);
+    for (std::size_t i = 0; i < N; ++i) message[i] = bitDist(rndm);
 
     auto zeroCoded = code.code(message, true);
     auto zeroDecode = decode.decode(zeroCoded);
@@ -35,11 +35,11 @@ int main() {
 
     for (double errorProbability = start; errorProbability <= end + 1e-12; errorProbability += step) {
         auto coded = code.code(message, true);
-        auto noise = BSC(coded, errorProbability, rng);
+        auto noise = BSC(coded, errorProbability, rndm);
         auto decoded = decode.decode(noise);
 
         if (decoded.size() != message.size()) {
-            std::cerr << "WARNING: Decoded length (" << decoded.size() << ") != message length (" << message.size() << ") at errorProbability = " << errorProbability << "\n";
+            std::cerr << "Decoded length (" << decoded.size() << ") != message length (" << message.size() << ") at errorProbability = " << errorProbability << "\n";
         }
 
         std::size_t errors = 0;
@@ -56,4 +56,3 @@ int main() {
     return 0;    
 
 }
-

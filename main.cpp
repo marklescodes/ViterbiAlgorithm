@@ -121,8 +121,7 @@ public:
 
 std::vector<int> BSC(const std::vector<int> &bits, double pError) {
     std::vector<int> noise(bits.size());
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static std::mt19937 gen(std::time(0));
     std::bernoulli_distribution dist (pError);
 
     for (size_t i = 0; i < bits.size(); i++) {

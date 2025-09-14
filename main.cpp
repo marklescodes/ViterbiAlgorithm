@@ -163,7 +163,13 @@ int main() {
     std::uniform_int_distribution<int> bitDist(0,1);
     for (std::size_t i = 0; i < N; ++i) message[i] = bitDist(rndm);
 
-
+    auto zeroCoded = code.code(message, true);
+    auto zeroDecode = decode.decode(zeroCoded);
+    if (zeroDecode != message) {
+        std::cerr << "Check FAILED.\n";
+        std::cerr << "message size = " << message.size() << ", coded zize = " <<zeroCoded.size() << ", decoded size = " << zeroDecode.size() << "\n";
+        return 2;
+    }   
 return 0;    
 
 }

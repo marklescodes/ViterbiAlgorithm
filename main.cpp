@@ -1,42 +1,58 @@
-#include <iostream>
+#include <algorithm> 
+#include <ctime> 
+#include <iostream> 
+#include <limits> 
+#include <random> 
 #include <vector>
-#include <random>
-#include <algorithm>
-#include <limits>
-#include <ctime>
 
 
+namespace coding {
+
+constexpr int infinite = std::numeric_limits<int>::max() / 4;
 
 class ConvolutionalCode {
 public:
-    int convlength;
-    std::vector<int> polynoms;
+    ConvolutionalCode(std::size_t convLength, const std::vector<int>& polynoms)\
+    : convLength_(convLength), polynoms_(polynoms) {}
+    std::vector<int> code(const std:: vector<int> &inputBits, bool terminate = true) const {
+        std::vector<int> output;
+        output.reserve(inputBits.size() * polynoms_.size() + (terminate ? (convLength_ - 1) * polynoms_.size() : 0));
 
-    ConvolutionalCode(int k, std::vector<int> p):
-    convlength(k), polynoms(p) {}
+        std::vector<int> shift(convLength_, 0);
 
-    std::vector<int> encode(const std::vector<int> &bits) {
-        std::vector <int> output;
-        std::vector <int> shift(convlength, 0);
+        auto processBit = [&](int bit) {
+            for (std::size_t i = convLength_ - 1; i > 0; --i) {
+                shift[i] = shift[i - 1];
+            }
+            shift[0] = bit;
 
-        for (size_t n = 0; n < bits.size(); n++) {
-            for (int i = convlength - 1; i >0 ; i--)
-                shift[i] = shift[i-1];
-            shift[0] = bits[n];
-
-            for (size_t g = 0; g < polynoms.size(); g++) {
-                int gen = polynoms[g];
+            for (int p : polynoms_) {
                 int val = 0;
-                for (int i = 0; i < convlength; i++) {
-                    if ((gen >> i) & 1) val ^= shift[i];
+                for (std::size_t i = 0; i < convLength_; i++) {
+                    if ((p >> i) & 1) val ^= shift[i];
                 }
                 output.push_back(val);
-            }
+            }  
+        };
+
+        for (int b : inputBits) processBit(b);
+
+        if (terminate && convLength_ > 1) {
+            for (std::size_t t = 0; t < convLength_ - 1; ++t) processBit(0);
         }
+
         return output;
-       
     }
+
+    std::size_t convLength() const { return convLength_; }
+    std::size_t outputBitsPerInput() const { return polynoms_.size(); }
+
+private:
+    std::size_t convLength_;
+    std::vector<int> polynoms_;
+    
 };
+
 
 class Viterbi{
 public:
@@ -118,6 +134,8 @@ std::vector<int> BSC(const std::vector<int> &bits, double pError) {
         if (dist(gen)) noise[i] ^= 1;
     }
     return noise;
+}
+
 }
 
 int main() {

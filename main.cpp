@@ -53,73 +53,69 @@ private:
     
 };
 
-
 class Viterbi{
 public:
-    int convlength;
+    int K;
     std::vector<int> polynoms;
-    int numState;
+    int numStates;
 
-    Viterbi(int k, std::vector<int> p): convlength(k), polynoms(p) {
-        numState = 1 << (convlength - 1);
+    Viterbi(int k, std::vector<int> p) : K(k), polynoms(p) {
+        numStates = 1 << (K - 1);
     }
 
-    std::vector<int> decode(const std::vector<int> &receive) {
+    std::vector<int> decode(const std::vector<int> &received) {
         int n = polynoms.size();
-        int T = receive.size() /n;
+        int T = received.size() / n;
 
-        std::vector<std::vector<int>> paths(T + 1, std::vector<int>(numState, 1e9));
-        std::vector<std::vector<int>> predecessor(T + 1, std::vector<int>(numState, -1));
-        std::vector<std::vector<int>> inputBit(T + 1, std::vector<int>(numState, -1));
+        std::vector<std::vector<int>> metric(T + 1, std::vector<int>(numStates, infinite));
+        std::vector<std::vector<int>> prev(T + 1, std::vector<int>(numStates, -1));
+        std::vector<std::vector<int>>inputBit(T + 1, std::vector<int>(numStates, -1));
 
-        paths[0][0] = 0;
+        metric[0][0] = 0;
 
         for (int t = 0; t < T; t++) {
-            for (int state = 0; state < numState; state++) {
-                if (paths[t][state] >= 1e9) continue;
+            for (int state = 0; state < numStates; state++) {
+                if (metric[t][state] >= 1e9) continue;
 
                 for (int bit = 0; bit <= 1; bit++) {
-                    int nextState = ((state << 1) | bit) & (numState - 1);
-                
+                    int nextState = ((state << 1) | bit) & (numStates - 1);
 
-                std::vector<int> shift(convlength);
-                for (int i = 0; i < convlength - 1; i++)
-                    shift[i] = (state >> i) & 1;
-                shift[convlength - 1] = bit;
+                    std::vector<int> shift(K);
+                    for (int i = 0; i < K - 1; i++)
+                        shift[i] = (state >> i) & 1;
+                    shift[K - 1] = bit;
 
-                std::vector<int> out;
-                for (int g: polynoms) {
-                    int val = 0;
-                    for (int i = 0; i < convlength; i++) {
-                        if ((g >> i) & 1) val ^= shift[i];
+                    std::vector<int> out;
+                    for (int gen : polynoms) {
+                        int val = 0;
+                        for (int i = 0; i < K; i++) {
+                            if ((gen >> i) & 1) val ^= shift[i];
+                        }
+                        out.push_back(val);
                     }
-                    out.push_back(val);
-                }
 
-                int hamdist = 0;
-                for (int k = 0; k < n; k++) {
-                    if (out[k] != receive[t * n + k]) hamdist++;
-                }
-                
-                int metric = paths[t][state] + hamdist;
-                if (metric < paths[t+1][nextState]) {
-                    paths[t+1][nextState] = metric;
-                    predecessor[t+1][nextState] = state;
-                    inputBit[t+1][nextState] = bit;
+                    int hamdist = 0;
+                    for (int k = 0; k < n; k++) {
+                        if (out[k] != received[t * n + k]) hamdist++;
+                    }
+
+                    int newMetric = metric[t][state] + hamdist;
+                    if (newMetric < metric[t+1][nextState]) {
+                        metric[t+1][nextState] = newMetric;
+                        prev[t+1][nextState] = state;
+                        inputBit[t+1][nextState] = bit;
+                    }
                 }
             }
         }
-    }
-    
-    int best = min_element(paths[T].begin(), paths[T].end()) - paths[T].begin();
 
-    std::vector<int> decodeBits(T);
-    for (int t = T; t > 0; t--) {
-        decodeBits[t - 1] = inputBit[t][best];
-        best = predecessor[t][best];
-    }
-
-    return decodeBits;
+        int bestState = std::min_element(metric[T].begin(), metric[T].end()) - metric[T].begin();
+        std::vector<int> decode(T);
+        for (int t = T; t > 0; t--) {
+            decode[t-1] = inputBit[t][bestState];
+            bestState = prev[t][bestState];
+        }
+        return decode;
     }
 };
 
@@ -136,7 +132,7 @@ std::vector<int> BSC(const std::vector<int> &bits, double pError) {
     return noise;
 }
 
-}
+};
 
 int main() {
 

@@ -41,13 +41,19 @@ std::vector<int> Viterbi::decode(const std::vector<int> &received) const {
                 if (metric < pathMetric[t + 1][nextState]) {
                     pathMetric[t + 1][nextState] = metric;
                     predecessor[t + 1][nextState] = (int)state;
+                    inputBit[t + 1][nextState] = bit;
                 }
             }
         }
     }
 
     int bestState = 0; 
-    
+    int bestMetric = pathMetric[T][0];
+    for (size_t s = 1; s < numStates_; ++s)
+        if (pathMetric[T][s] < bestMetric) {
+            bestMetric = pathMetric[T][s];
+            bestState = (int)s;
+        }
     std::vector<int> decode(T, 0);
     int currentState = bestState;
     for (int t = (int)T; t > 0; --t) {

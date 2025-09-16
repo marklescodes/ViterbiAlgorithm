@@ -9,7 +9,7 @@ This project implements:
 # Build
 Clone the repo and run:
 
-git clone https://github.com/YOURNAME/viterbi_project.git
+git clone https://github.com/marklescodes/ViterbiAlgorithm
 cd viterbi_project
 make
 

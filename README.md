@@ -11,9 +11,13 @@ Clone the repo and run:
 
 git clone https://github.com/marklescodes/ViterbiAlgorithm.git
 
-cd viterbi_project
-
+## For Linux:
 make
+./viterbi --N 1000 --start 0.0 --end 0.3 --step 0.05
+
+## For Windows:
+make
+.\viterbi.exe --N 1000 --start 0.0 --end 0.3 --step 0.05
 
 This will produce the binary viterbi
 

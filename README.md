@@ -10,6 +10,7 @@ This project implements:
 Clone the repo and run:
 
 git clone git@github.com:marklescodes/ViterbiAlgorithm.git
+
 cd viterbi_project
 make
 

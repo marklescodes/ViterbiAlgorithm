@@ -43,3 +43,4 @@
 *.vscode
 *.json
 ber_vs_error.csv
+results.csv

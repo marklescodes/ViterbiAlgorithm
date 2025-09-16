@@ -6,7 +6,7 @@ This project implements:
 - Binary Symmetric Channel (BSC) simulation
 - BER vs Error probability experiment
 
-# Build
+## Build
 
 Clone the repo and run:
 
@@ -17,13 +17,13 @@ make
 
 This will produce the binary viterbi
 
-# Run
+## Run
 
 Example:
 
 ./viterbi --N 10000 --start 0.0 --end 0.3 --step 0.05 --out results.csv
 
-# Arguments:
+## Arguments:
 
 --N <int> : message length (default 1000)
 
@@ -37,7 +37,7 @@ Example:
 
 --out <file> : output CSV file (default ber_vs_error.csv)
 
-# Output
+## Output
 
 The program generates a CSV file with two columns:
 

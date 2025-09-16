@@ -7,16 +7,15 @@ This project implements:
 - BER vs Error probability experiment
 
 # Build
-Clone the repo and run:
-
+Clone the repo and run:<br />
 git clone https://github.com/marklescodes/ViterbiAlgorithm.git
 
 ## For Linux:
-make.\n
+make<br />
 ./viterbi --N 1000 --start 0.0 --end 0.3 --step 0.05
 
 ## For Windows:
-make.\n
+make<br />
 .\viterbi.exe --N 1000 --start 0.0 --end 0.3 --step 0.05
 
 This will produce the binary viterbi

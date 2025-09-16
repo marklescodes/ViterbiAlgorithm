@@ -9,8 +9,8 @@ std::vector<int> Viterbi::decode(const std::vector<int> &received) const {
     const size_t T = received.size() / n;
 
     std::vector<std::vector<int>> pathMetric(T + 1, std::vector<int>(numStates_, infinite));
-    std::vector<std::vector<int>> predecessor(T+1, std::vector<int>(numStates_, -1));
-    std::vector<std::vector<int>> inputBit (T+1, std::vector<int>(numStates_, -1));
+    std::vector<std::vector<int>> predecessor(T + 1, std::vector<int>(numStates_, -1));
+    std::vector<std::vector<int>> inputBit(T + 1, std::vector<int>(numStates_, -1));
 
     pathMetric[0][0] = 0;
 
@@ -30,36 +30,28 @@ std::vector<int> Viterbi::decode(const std::vector<int> &received) const {
                 for (size_t gi = 0; gi < n; ++gi) {
                     int p = polynoms_[gi];
                     int outBit = 0;
-                    for (size_t i = 0; i < convLength_; ++i) {
-                        if ((p >> i) & 1) outBit ^= shift[i];
+                    for (size_t j = 0; j < convLength_; ++j) {
+                        if ((p >> j) & 1) outBit ^= shift[j];
                     }
                     int receivedBit = received[t * n + gi];
                     if (outBit != receivedBit) ++hamDist;
                 }
 
                 int metric = pathMetric[t][state] + hamDist;
-                if (metric < pathMetric[t+1][nextState]) {
-                    pathMetric[t+1][nextState] = metric;
-                    predecessor[t+1][nextState] = bit;
-                    inputBit[t+1][nextState] = bit;
+                if (metric < pathMetric[t + 1][nextState]) {
+                    pathMetric[t + 1][nextState] = metric;
+                    predecessor[t + 1][nextState] = (int)state;
                 }
             }
         }
     }
 
-    int bestState = 0;
-    int bestMetric = pathMetric[T][0];
-    for (size_t s = 1; s < numStates_; ++s) {
-        if (pathMetric[T][s] < bestMetric) {
-            bestMetric = pathMetric[T][s];
-            bestState = (int)s;
-        }
-    }
-
-    std::vector<int> decode(T,0);
+    int bestState = 0; 
+    
+    std::vector<int> decode(T, 0);
     int currentState = bestState;
     for (int t = (int)T; t > 0; --t) {
-        decode[t-1] = inputBit[t][currentState];
+        decode[t - 1] = inputBit[t][currentState];
         currentState = predecessor[t][currentState];
         if (currentState < 0) break;
     }

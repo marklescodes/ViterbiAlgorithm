@@ -1,5 +1,5 @@
 #ifndef CONVOLUTIONAL_CODE_H
-#define CONVOLUTIONAL_CODE_h
+#define CONVOLUTIONAL_CODE_H
 
 #include <vector>
 #include <cstddef>

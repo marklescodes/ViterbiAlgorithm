@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     Viterbi decode(convLength, polynoms);
 
     std::vector<int> message(N);
-    std::uniform_int_distribution<int> bitDist(0,1);
+    std::uniform_int_distribution<int> bitDist(0, 1);
     for (size_t i = 0; i < N; ++i)
         message[i] = bitDist(rng);
 
@@ -48,11 +48,10 @@ int main(int argc, char *argv[]) {
     
     auto zeroCoded = code.code(message, true);
     auto zeroDecode = decode.decode(zeroCoded);
-    if (zeroCoded != message) {
+    if (zeroDecode != message) {
         std::cerr << "Check FAILED (decoder does not invert encoder correctly).\n";
         return 2;
     }
-    
 
     std::cout << std::fixed << std::setprecision(4);
     std::cout << "Seed: " << seed << "\n";
@@ -71,7 +70,8 @@ int main(int argc, char *argv[]) {
         double BER = static_cast<double>(errors) / static_cast<double>(message.size());
         out << errorProbability << ";" << BER << "\n";
 
-        std::cout << "Error probability = " << std:: setw(5) << errorProbability << " Ber = " << BER << "\n";
+        std::cout << "Error probability = " << std::setw(5) << errorProbability
+                  << " BER = " << BER << "\n";
     }
 
     std::cout << "CSV file created: " << outputFile << "\n";

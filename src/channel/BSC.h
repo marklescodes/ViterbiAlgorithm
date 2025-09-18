@@ -4,13 +4,6 @@
 #include <vector>
 #include <random>
 
-inline std::vector<int> BSC(const std::vector<int> &bits, double pError, std::mt19937& rng) {
-    std::vector<int> noisy(bits.size());
-    std::bernoulli_distribution flip(pError);
-    for (size_t i = 0; i < bits.size(); ++i) {
-        noisy[i] = bits[i] ^ static_cast<int>(flip(rng));
-    }
-    return noisy;
-}
+std::vector<int> BSC(const std::vector<int> &input, double p, std::mt19937 &rng);
 
 #endif

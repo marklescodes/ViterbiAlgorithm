@@ -7,7 +7,8 @@
 class ConvolutionalCode {
 public:
     ConvolutionalCode(size_t convLength, const std::vector<int> &polynoms);
-    std::vector<int> code(const std::vector<int> &inputBits) const;
+
+    std::vector<int> code(const std::vector<int> &inputBits, bool terminate = true) const;
 
 private:
     size_t convLength_;

@@ -1,31 +1,19 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -g
-INC = -I$(SRC_DIR)
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 
 SRC_DIR = src
-CODEC_DIR = $(SRC_DIR)/codec
-DECODER_DIR = $(SRC_DIR)/decoder
-CHANNEL_DIR = $(SRC_DIR)/channel
 BUILD_DIR = build
+BIN = viterbi
 
-SOURCES = $(SRC_DIR)/main.cpp \
-          $(CODEC_DIR)/ConvolutionalCode.cpp \
-          $(DECODER_DIR)/Viterbi.cpp
+SRCS = $(wildcard $(SRC_DIR)/*.cpp $(SRC_DIR)/*/*.cpp)
+OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
-
-TARGET = viterbi
-
-all: $(TARGET)
-
-$(TARGET): $(OBJECTS)
+$(BIN): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
-
-.PHONY: all clean
+	rm -rf $(BUILD_DIR) $(BIN)

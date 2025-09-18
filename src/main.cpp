@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         double BER = static_cast<double>(errors) / message.size();
 
         std::cout << "Error probability = " << std::fixed << std::setprecision(4) << errorProbability
-                  << " BER = " << std::scientific << BER << "\n";
+                  << " BER = " << std::fixed << BER << "\n";
     }
 
     return 0;

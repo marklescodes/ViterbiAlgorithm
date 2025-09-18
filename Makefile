@@ -1,24 +1,31 @@
-ifeq ($(OS),Windows_NT)
-    CXX = g++.exe
-else
-    CXX = g++
-endif
+CXX = g++
+CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -g
+INC = -I$(SRC_DIR)
 
-CXXFLAGS = -std=c++17 -O2 -Wall
+SRC_DIR = src
+CODEC_DIR = $(SRC_DIR)/codec
+DECODER_DIR = $(SRC_DIR)/decoder
+CHANNEL_DIR = $(SRC_DIR)/channel
+BUILD_DIR = build
 
-SRC = src/main.cpp src/codec/ConvolutionalCode.cpp src/decoder/Viterbi.cpp
-OBJ = $(SRC:.cpp=.o)
+SOURCES = $(SRC_DIR)/main.cpp \
+          $(CODEC_DIR)/ConvolutionalCode.cpp \
+          $(DECODER_DIR)/Viterbi.cpp
 
-ifeq ($(OS),Windows_NT)
-    TARGET = viterbi.exe
-else
-    TARGET = viterbi
-endif
+OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
+
+TARGET = viterbi
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
+$(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET)
+
+.PHONY: all clean

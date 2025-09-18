@@ -5,12 +5,12 @@
 #include <cstddef>
 #include <limits>
 
-constexpr int infinite = std::numeric_limits<int>::max() / 4;
+constexpr int INF = std::numeric_limits<int>::max() / 4;
 
 class Viterbi {
 public:
     Viterbi(size_t convLength, const std::vector<int> &polynoms);
-    std::vector<int> decode(const std::vector<int> &received) const;
+    std::vector<int> decode(const std::vector<int> &received, size_t originalLength) const;
 
 private:
     size_t convLength_;

@@ -3,7 +3,7 @@ import csv
 
 x, y = [], []
 
-with open("ber_vs_error.csv") as f:
+with open("results.csv") as f:
     reader = csv.reader(f, delimiter=";")
     for row in reader:
         x.append(float(row[0]))

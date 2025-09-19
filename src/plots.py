@@ -5,6 +5,7 @@ x, y = [], []
 
 with open("results.csv") as f:
     reader = csv.reader(f, delimiter=";")
+    next(reader)
     for row in reader:
         x.append(float(row[0]))
         y.append(float(row[1]))

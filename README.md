@@ -21,33 +21,25 @@ make\
 
 This will produce the binary viterbi
 
-# Run
-
-Example:
-
-./viterbi --N 10000 --start 0.0 --end 0.3 --step 0.05 --out results.csv
-
 # Arguments
+./viterbi [N start end step]
+N — number of bits in the message (default 100000)
 
---N <int> : message length (default 1000)
+start — starting error probability (default 0.0)
 
---convLength <int> : convolutional code constraint length (default 3)
+end — ending error probability (default 0.1)
 
---start <double> : start channel error probability (default 0.0)
-
---end <double> : end channel error probability (default 0.2)
-
---step <double> : increment for error probability (default 0.02)
-
---out <file> : output CSV file (default ber_vs_error.csv)
+step — increment of error probability (default 0.01)
 
 # Output
 
 The program generates a CSV file with two columns:
 
-ErrorProbability; BER
-0.00; 0.0000
-0.02; 0.0012
+Seed: 12345678
+Error probability = 0.0000 BER = 0.00000000
+Error probability = 0.0100 BER = 0.00007000
+Error probability = 0.0200 BER = 0.00025000
 ...
+
 
 You can then plot it in Python/Excel/gnuplot.

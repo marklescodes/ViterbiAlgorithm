@@ -22,7 +22,7 @@ make\
 This will produce the binary viterbi
 
 # Arguments
-./viterbi [N start end step]
+./viterbi [N start end step]<br />
 N — number of bits in the message (default 100000)
 
 start — starting error probability (default 0.0)

@@ -33,13 +33,13 @@ step — increment of error probability (default 0.01)
 
 # Output
 
-The program generates a CSV file with two columns:
+The program generates a CSV file with two columns:<br />
 
-Seed: 12345678
-Error probability = 0.0000 BER = 0.00000000
-Error probability = 0.0100 BER = 0.00007000
-Error probability = 0.0200 BER = 0.00025000
-...
+Seed: 12345678<br />
+Error probability = 0.0000 BER = 0.00000000<br />
+Error probability = 0.0100 BER = 0.00007000<br />
+Error probability = 0.0200 BER = 0.00025000<br />
+...<br />
 
 
 You can then plot it in Python/Excel/gnuplot.
